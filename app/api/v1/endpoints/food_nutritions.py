@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from typing import List
-from app.schemas.food import Food
+from app.schemas.food_nutrition import Food
 
 router = APIRouter()
 
