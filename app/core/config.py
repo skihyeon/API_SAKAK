@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.0.1"
     APP_DESCRIPTION: str = "API for food nutrition data"
     
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./food_nutrition_api.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./db_files/food_nutrition_api.db")
     ES_HOST: str = os.getenv("ES_HOST", "http://localhost:9200")
     
     @property
