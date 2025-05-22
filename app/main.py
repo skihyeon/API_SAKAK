@@ -20,5 +20,5 @@ async def health_check():
 app.include_router(
     food_nutritions_router.router,
     prefix="/api/v1/food-nutritions",
-    tags=["FoodNutritions API (Mocked/Partially Implemented)"]
+    tags=["FoodNutritions API"]
 )
