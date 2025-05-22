@@ -20,6 +20,12 @@ EXCEL_FILE_PATH = "data/food_data.xlsx"
 def safe_float_conversion(value, column_name_for_log="", food_cd_for_log=""):
     if pd.isna(value) or str(value).strip() == '-' or str(value).strip() == '':
         return None
+    
+    # "1g 미만"을 -1.0으로 치환
+    if value == '1g 미만':
+        logger.info(f"FoodCD '{food_cd_for_log}': 컬럼 '{column_name_for_log}'의 값 '{value}'을(를) -1.0으로 변환합니다 (1g 미만 의미).")
+        return -1.0 
+
     try:
         return float(value)
     except ValueError:
