@@ -13,7 +13,7 @@ services:
       - ./db_files:/app/db_files
     environment:
       - DATABASE_URL=sqlite:////app/db_files/food_api.db
-      - ELASTICSEARCH_HOSTS=http://es01:9200
+      - ES_HOST=http://es01:9200
     depends_on:
       es01:
         condition: service_healthy
@@ -26,12 +26,12 @@ services:
     container_name: es01_food_nutrition
     environment:
       - discovery.type=single-node
-      - bootstrap.memory_lock=true
+      # - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
     volumes:
       - es_data01:/usr/share/elasticsearch/data
     ports:
