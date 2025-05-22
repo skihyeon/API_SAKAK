@@ -106,13 +106,19 @@ async def search_food_nutritions_via_es(
     - `research_year`와 `food_code`는 정확히 일치하는 값을 찾습니다.
     """
 
-    results = search_food_nutritions_in_es(
-        es_client=es,
-        food_name=food_name,
-        research_year=research_year,
-        maker_name=maker_name,
-        food_cd=food_code,
-        skip=skip,
-        limit=limit
-    )
-    return results
+    try:
+        results = search_food_nutritions_in_es(
+            es_client=es,
+            food_name=food_name,
+            research_year=research_year,
+            maker_name=maker_name,
+            food_cd=food_code,
+            skip=skip,
+            limit=limit
+        )
+        return results
+    except ConnectionError:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="검색 서비스에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="검색 중 오류가 발생했습니다.")
+
