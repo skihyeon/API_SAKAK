@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic.config import ConfigDict
 
 class Settings(BaseSettings):
     APP_NAME: str = "Food Nutrition API"
@@ -7,9 +8,6 @@ class Settings(BaseSettings):
     
     DATABASE_URL: str = "sqlite:///./food_nutrition_api.db"
     ELASTICSEARCH_URL: str = "http://localhost:9200"
-    
-    class Config:
-        pass
 
 settings = Settings()
     
