@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: food_nutrition_api_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - ./db_files:/app/db_files
+    environment:
+      - DATABASE_URL=sqlite:////app/db_files/food_api.db
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+    depends_on:
+      es01:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - food_net
+
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: es01_food_nutrition
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data01:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - food_net
+
+volumes:
+  es_data01:
+    driver: local
+
+networks:
+  food_net:
+    driver: bridge
