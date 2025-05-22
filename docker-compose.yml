@@ -12,7 +12,7 @@ services:
       - ./app:/app/app
       - ./db_files:/app/db_files
     environment:
-      - DATABASE_URL=sqlite:////app/db_files/food_api.db
+      - DATABASE_URL=sqlite:////app/db_files/food_nutrition_api.db
       - ES_HOST=http://es01:9200
     depends_on:
       es01:

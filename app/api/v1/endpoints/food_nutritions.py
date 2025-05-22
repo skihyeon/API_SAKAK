@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -7,9 +7,12 @@ from app.schemas.food_nutrition import (
     FoodNutrition,
     FoodNutritionCreate,
     FoodNutritionUpdate,
+    FoodNutritionSearchResponse
 )
 
 from app.repositories import food_nutrition_repository
+from app.search import get_es_client, search_food_nutritions_in_es 
+from elasticsearch import Elasticsearch
 
 from app.db.session import get_db
 
@@ -84,3 +87,38 @@ async def delete_single_food_nutrition(
     if deleted_food_nutrition is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"FoodNutrition with id {food_nutrition_id} not found to delete")
     return deleted_food_nutrition
+
+
+@router.get("/search/", response_model=List[FoodNutritionSearchResponse], summary="음식 영양 정보 검색")
+async def search_food_nutritions_via_es(
+    food_name: Optional[str] = Query(None, description="검색할 식품 이름 (부분 일치)"),
+    research_year: Optional[str] = Query(None, description="조사년도 (YYYY)"),
+    maker_name: Optional[str] = Query(None, description="지역/제조사 (부분 일치)"),
+    food_code: Optional[str] = Query(None, description="식품코드"),
+    skip: int = Query(0, ge=0, description="건너뛸 결과 수"),
+    limit: int = Query(10, ge=1, le=100, description="반환할 최대 결과 수"),
+    es: Elasticsearch = Depends(get_es_client)
+):
+    """
+    주어진 조건에 따라 Elasticsearch에서 음식 영양 정보를 검색합니다.
+    - 모든 검색 조건은 AND로 조합됩니다.
+    - `food_name`과 `maker_name`은 부분 일치 검색을 지원합니다.
+    - `research_year`와 `food_code`는 정확히 일치하는 값을 찾습니다.
+    """
+
+    try:
+        results = search_food_nutritions_in_es(
+            es_client=es,
+            food_name=food_name,
+            research_year=research_year,
+            maker_name=maker_name,
+            food_cd=food_code,
+            skip=skip,
+            limit=limit
+        )
+        return results
+    except ConnectionError:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="검색 서비스에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="검색 중 오류가 발생했습니다.")
+
