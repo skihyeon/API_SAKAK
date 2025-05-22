@@ -23,4 +23,4 @@ class FoodNutrition(Base):
     trans_fat = Column(Float)                                                       ## 17. 트랜스지방(g)(1회제공량당)
 
     def __repr__(self):
-        return f"<FoodNutrition(id={self.id}, name='{self.food_name}')>"
+        return f"<FoodNutrition(id={self.id}, food_name='{self.food_name}', food_cd='{self.food_cd}')>"
