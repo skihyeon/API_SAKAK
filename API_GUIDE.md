@@ -58,7 +58,8 @@
     * `salt` (float, 선택): 나트륨(mg)
     * `cholesterol` (float, 선택): 콜레스테롤(mg)
     * `saturated_fatty_acids` (float, 선택): 포화지방산(g)
-    * `trans_fat` (float, 선택): 트랜스지방(g). "1g 미만"의 경우 `-1.0`으로 입력될 수 있습니다.
+    * `trans_fat` (float, 선택): 트랜스지방(g). 
+    ** "1g 미만"의 경우 `-1.0`으로 입력됩니다. **
 * **예시 요청 (`curl`):**
     ```bash
     curl -X POST "http://localhost:8000/api/v1/food-nutritions/" \
@@ -191,6 +192,8 @@
     * **Body:** 검색된 음식 영양 정보 객체의 리스트 (`List[FoodNutritionSearchResponse]`). 각 객체는 "출력 항목" 표에 명시된 17개 필드를 포함합니다.
 
 ## 6. 참고한 RESTful API 모범 사례
+
+[모범사례](https://thebasics.tistory.com/164)
 
 본 API는 다음과 같은 RESTful 디자인 원칙을 준수하여 설계되었습니다:
 

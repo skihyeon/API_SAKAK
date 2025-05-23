@@ -11,8 +11,8 @@
 **실행 방법:**
 1.  Git 리포지토리 클론:
     ```bash
-    git clone <리포지토리_URL>
-    cd <프로젝트_디렉토리>
+    git clone https://github.com/skihyeon/API_SAKAK.git
+    cd API_SAKAK
     ```
 2.  `setup_project.sh` 스크립트에 실행 권한 부여:
     ```bash
